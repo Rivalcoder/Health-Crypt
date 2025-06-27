@@ -1,7 +1,7 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { ArrowRight, Users, UserPlus, Activity } from 'lucide-react';
+import { ArrowRight, Users, UserPlus, Activity, BarChart3, HeartPulse } from 'lucide-react';
 import { 
     getActiveDoctorsCount, 
     getNewDoctorApplicantsCount, 
@@ -58,6 +58,16 @@ export default async function AdminDashboardPage() {
     },
   ];
 
+  // Fetch recent doctor applicants (for demo, just fetch new applicants)
+  // In a real app, you would fetch actual applicant data with more details
+  const client = await import('@/lib/mongodb').then(m => m.default);
+  const db = (await client).db('medivault');
+  const recentApplicants = await db.collection('doctors')
+    .find({ passwordSet: false })
+    .sort({ createdAt: -1 })
+    .limit(5)
+    .toArray();
+
   return (
     <div className="container py-10">
       <div className="mb-8">
@@ -80,6 +90,66 @@ export default async function AdminDashboardPage() {
               </CardContent>
             </Card>
           ))}
+        </div>
+
+        {/* Analytics/Chart Section */}
+        <div className="mt-8 grid gap-6 lg:grid-cols-2">
+          <Card className="opacity-0 animate-fade-up" style={{ animationDelay: '700ms' }}>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <div>
+                <CardTitle>Growth Analytics</CardTitle>
+                <CardDescription>Patient & Doctor growth (coming soon)</CardDescription>
+              </div>
+              <BarChart3 className="h-8 w-8 text-primary" />
+            </CardHeader>
+            <CardContent>
+              <div className="h-32 flex items-center justify-center text-muted-foreground">
+                <span>📊 Analytics chart coming soon...</span>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* System Health Section */}
+          <Card className="opacity-0 animate-fade-up" style={{ animationDelay: '800ms' }}>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <div>
+                <CardTitle>System Health</CardTitle>
+                <CardDescription>Platform status</CardDescription>
+              </div>
+              <HeartPulse className="h-8 w-8 text-green-500 animate-pulse" />
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center gap-2 text-green-600 font-semibold">
+                <HeartPulse className="h-5 w-5 animate-pulse" />
+                All systems operational
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Recent Doctor Applicants Section */}
+        <div className="mt-8 grid gap-6">
+          <Card className="opacity-0 animate-fade-up" style={{ animationDelay: '900ms' }}>
+            <CardHeader>
+              <CardTitle>Recent Doctor Applicants</CardTitle>
+              <CardDescription>Doctors who have recently applied (pending setup)</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {recentApplicants.length === 0 ? (
+                <div className="text-muted-foreground">No new applicants.</div>
+              ) : (
+                <ul className="divide-y">
+                  {recentApplicants.map((doc: any) => (
+                    <li key={doc._id} className="py-2 flex flex-col md:flex-row md:items-center md:gap-4">
+                      <span className="font-medium">{doc.name}</span>
+                      <span className="text-xs text-muted-foreground">{doc.email}</span>
+                      <span className="text-xs text-muted-foreground">{doc.specialty}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </CardContent>
+          </Card>
         </div>
 
         <div className="mt-8 grid gap-6">

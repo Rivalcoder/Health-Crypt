@@ -272,3 +272,84 @@ export async function getNewDoctorApplicantsCount(): Promise<number> {
         return 0;
     }
 }
+
+export async function searchDoctors(query: string, page = 1, pageSize = 20): Promise<{ doctors: Doctor[]; total: number }> {
+    const skip = (page - 1) * pageSize;
+    let filter = {};
+    if (query && query.length >= 2) {
+        filter = {
+            $or: [
+                { name: { $regex: query, $options: 'i' } },
+                { email: { $regex: query, $options: 'i' } },
+                { licenseId: { $regex: query, $options: 'i' } },
+                { specialty: { $regex: query, $options: 'i' } },
+            ]
+        };
+    }
+    try {
+        const client = await clientPromise;
+        const db = client.db('medivault');
+        const total = await db.collection('doctors').countDocuments(filter);
+        const doctors = await db.collection('doctors')
+            .find(filter)
+            .skip(skip)
+            .limit(pageSize)
+            .toArray();
+        return {
+            doctors: doctors.map(user => ({
+                id: user._id.toString(),
+                name: user.name,
+                email: user.email,
+                licenseId: user.licenseId,
+                specialty: user.specialty,
+                status: user.status,
+                avatarUrl: user.avatarUrl,
+            })),
+            total,
+        };
+    } catch (error) {
+        console.error('Search Doctor Error:', error);
+        return { doctors: [], total: 0 };
+    }
+}
+
+export async function searchPatientsPaginated(query: string, page = 1, pageSize = 20): Promise<{ patients: Patient[]; total: number }> {
+    const skip = (page - 1) * pageSize;
+    let filter = {};
+    if (query && query.length >= 2) {
+        filter = {
+            $or: [
+                { name: { $regex: query, $options: 'i' } },
+                { email: { $regex: query, $options: 'i' } },
+            ]
+        };
+    }
+    try {
+        const client = await clientPromise;
+        const db = client.db('medivault');
+        const total = await db.collection('patients').countDocuments(filter);
+        const patients = await db.collection('patients')
+            .find(filter)
+            .skip(skip)
+            .limit(pageSize)
+            .toArray();
+        return {
+            patients: patients.map(user => ({
+                id: user._id.toString(),
+                name: user.name,
+                email: user.email,
+                dateOfBirth: user.dateOfBirth,
+                gender: user.gender,
+                contact: user.contact,
+                address: user.address,
+                avatarUrl: user.avatarUrl,
+                bloodGroup: user.bloodGroup,
+                status: user.status,
+            })),
+            total,
+        };
+    } catch (error) {
+        console.error('Search Patient Error:', error);
+        return { patients: [], total: 0 };
+    }
+}

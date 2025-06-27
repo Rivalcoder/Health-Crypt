@@ -8,7 +8,7 @@ import { login as createSession, logout as destroySession, getSession } from '@/
 import { revalidatePath } from 'next/cache';
 import { ObjectId } from 'mongodb';
 import type { User, Doctor, Patient, Visit, Prescription } from '@/types';
-import { findPatients, getDoctorById } from '@/lib/data';
+import { findPatients, getDoctorById, searchDoctors, searchPatientsPaginated } from '@/lib/data';
 
 const SignupFormSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
@@ -864,4 +864,14 @@ export async function adminUpdatePatientPassword(patientId: string, newPassword:
   } catch (error) {
     return { success: false, message: `Error: ${error instanceof Error ? error.message : String(error)}` };
   }
+}
+
+export async function searchDoctorsAction(query: string, page = 1, pageSize = 20) {
+  'use server';
+  return await searchDoctors(query, page, pageSize);
+}
+
+export async function searchPatientsPaginatedAction(query: string, page = 1, pageSize = 20) {
+  'use server';
+  return await searchPatientsPaginated(query, page, pageSize);
 }

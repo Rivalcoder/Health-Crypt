@@ -23,7 +23,7 @@ interface GetColumnsProps {
   onDelete: (patient: Patient) => void;
 }
 
-export const getColumns = ({ onEdit, onDelete }: GetColumnsProps): ColumnDef<Patient>[] => [
+export const getColumns = ({ onEdit, onDelete, pwDialogOpenId, setPwDialogOpenId }: GetColumnsProps & { pwDialogOpenId: string | null, setPwDialogOpenId: (id: string | null) => void }): ColumnDef<Patient>[] => [
   {
     accessorKey: 'name',
     header: 'Name',
@@ -59,10 +59,14 @@ export const getColumns = ({ onEdit, onDelete }: GetColumnsProps): ColumnDef<Pat
     id: 'actions',
     cell: ({ row }) => {
       const patient = row.original;
-      const [pwDialogOpen, setPwDialogOpen] = React.useState(false);
       return (
         <div className="text-right">
-          <UpdatePatientPasswordDialog patientId={patient.id} patientName={patient.name} open={pwDialogOpen} setOpen={setPwDialogOpen} />
+          <UpdatePatientPasswordDialog
+            patientId={patient.id}
+            patientName={patient.name}
+            open={pwDialogOpenId === patient.id}
+            setOpen={(open: boolean) => setPwDialogOpenId(open ? patient.id : null)}
+          />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
@@ -78,7 +82,7 @@ export const getColumns = ({ onEdit, onDelete }: GetColumnsProps): ColumnDef<Pat
                   View/Edit
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setPwDialogOpen(true)}>
+              <DropdownMenuItem onClick={() => setPwDialogOpenId(patient.id)}>
                 <User className="mr-2 h-4 w-4" />
                 Reset password
               </DropdownMenuItem>

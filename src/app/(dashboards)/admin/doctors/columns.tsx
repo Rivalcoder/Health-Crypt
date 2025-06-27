@@ -24,7 +24,7 @@ interface GetColumnsProps {
   onDelete: (doctor: Doctor) => void;
 }
 
-export const getColumns = ({ onEdit, onDelete }: GetColumnsProps): ColumnDef<Doctor>[] => [
+export const getColumns = ({ onEdit, onDelete, pwDialogOpenId, setPwDialogOpenId }: GetColumnsProps & { pwDialogOpenId: string | null, setPwDialogOpenId: (id: string | null) => void }): ColumnDef<Doctor>[] => [
   {
     accessorKey: 'name',
     header: 'Name',
@@ -67,10 +67,14 @@ export const getColumns = ({ onEdit, onDelete }: GetColumnsProps): ColumnDef<Doc
     id: 'actions',
     cell: ({ row }) => {
       const doctor = row.original;
-      const [pwDialogOpen, setPwDialogOpen] = useState(false);
       return (
         <div className="text-right">
-          <UpdateDoctorPasswordDialog doctorId={doctor.id} doctorName={doctor.name} open={pwDialogOpen} setOpen={setPwDialogOpen} />
+          <UpdateDoctorPasswordDialog
+            doctorId={doctor.id}
+            doctorName={doctor.name}
+            open={pwDialogOpenId === doctor.id}
+            setOpen={(open: boolean) => setPwDialogOpenId(open ? doctor.id : null)}
+          />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
@@ -90,7 +94,7 @@ export const getColumns = ({ onEdit, onDelete }: GetColumnsProps): ColumnDef<Doc
                 <Pencil className="mr-2 h-4 w-4" />
                 Edit details
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setPwDialogOpen(true)}>
+              <DropdownMenuItem onClick={() => setPwDialogOpenId(doctor.id)}>
                 <User className="mr-2 h-4 w-4" />
                 Reset password
               </DropdownMenuItem>
