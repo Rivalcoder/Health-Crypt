@@ -1,4 +1,4 @@
-# 🩺 **MediVault** – The Future of Health Records
+# 🩺 **Health Crypt** – The Future of Health Records
 
 ![MediVault Logo](https://img.icons8.com/ios-filled/50/87CEEB/stethoscope.png)  
 *A secure, AI-powered platform for managing digital health records for patients, doctors, and administrators.*
