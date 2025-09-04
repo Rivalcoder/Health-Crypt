@@ -63,7 +63,7 @@
 
 ### 1. **Clone the Repository**
 ```bash
-git clone https://github.com/yourusername/medivault.git
+git clone https://github.com/Rivalcoder/Health-Crypt.git
 cd medivault
 ```
 
