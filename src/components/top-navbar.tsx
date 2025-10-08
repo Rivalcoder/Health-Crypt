@@ -17,6 +17,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { User, LogOut, Settings, Menu, X, LayoutGrid } from 'lucide-react';
 import { logoutAction } from '@/app/actions';
+import { ThemeToggle } from '@/components/theme-toggle';
 import type { User as UserType } from '@/types';
 
 function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
@@ -79,6 +80,7 @@ export function TopNavbar({ user }: { user: UserType | null }) {
         </nav>
 
         <div className="flex items-center justify-end space-x-2">
+            <ThemeToggle />
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-10 w-10 rounded-full">

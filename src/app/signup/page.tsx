@@ -1,5 +1,6 @@
 import { SignupForm } from './signup-form';
 import { Logo } from '@/components/logo';
+import { ThemeToggle } from '@/components/theme-toggle';
 import Link from 'next/link';
 
 export default function SignupPage() {
@@ -7,6 +8,9 @@ export default function SignupPage() {
     <div className="relative flex min-h-screen flex-col bg-background">
       <div className="absolute left-6 top-6 z-10">
         <Logo />
+      </div>
+      <div className="absolute right-6 top-6 z-10">
+        <ThemeToggle />
       </div>
       <main className="flex-grow w-full flex items-center justify-center p-6">
           <div className="mx-auto grid w-full max-w-md gap-6 py-12">

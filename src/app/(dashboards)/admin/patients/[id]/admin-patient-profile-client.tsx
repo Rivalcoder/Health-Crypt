@@ -162,7 +162,7 @@ export function AdminPatientProfileClient({ patient, visits: initialVisits }: { 
                           <td className="px-4 py-2 border">{visit.reason}</td>
                           <td className="px-4 py-2 border">
                             {visit.doctor?.id ? (
-                              <Link href={`/admin/doctors/${visit.doctor.id}`} className="text-blue-600 underline" onClick={e => e.stopPropagation()}>
+                              <Link href={`/admin/doctors/${visit.doctor.id}`} className="text-blue-600 dark:text-blue-400 underline" onClick={e => e.stopPropagation()}>
                                 {visit.doctor.name}
                               </Link>
                             ) : (

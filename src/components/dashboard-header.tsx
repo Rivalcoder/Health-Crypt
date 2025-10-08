@@ -7,6 +7,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { User, LogOut, Settings } from 'lucide-react';
 import { logoutAction, getSessionUser } from '@/app/actions';
+import { ThemeToggle } from '@/components/theme-toggle';
 import type { User as UserType } from '@/types';
 
 type DashboardHeaderProps = {
@@ -37,6 +38,7 @@ export function DashboardHeader({ title, children }: DashboardHeaderProps) {
         <div className="ml-auto flex-1 sm:flex-initial">
           {children}
         </div>
+        <ThemeToggle />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="secondary" size="icon" className="rounded-full">

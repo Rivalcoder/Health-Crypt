@@ -116,10 +116,10 @@ export default async function AdminDashboardPage() {
                 <CardTitle>System Health</CardTitle>
                 <CardDescription>Platform status</CardDescription>
               </div>
-              <HeartPulse className="h-8 w-8 text-green-500 animate-pulse" />
+              <HeartPulse className="h-8 w-8 text-emerald-500 dark:text-emerald-400 animate-pulse" />
             </CardHeader>
             <CardContent>
-              <div className="flex items-center gap-2 text-green-600 font-semibold">
+              <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-semibold">
                 <HeartPulse className="h-5 w-5 animate-pulse" />
                 All systems operational
               </div>

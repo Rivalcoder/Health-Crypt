@@ -39,7 +39,7 @@ export default async function DoctorPublicProfilePage({ params }: { params: { id
                             </CardDescription>
                             <div className="flex items-center gap-2 text-sm text-muted-foreground pt-2">
                                 <Briefcase className="h-4 w-4" /> 
-                                Status: <span className={doctor.status === 'active' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}>
+                                Status: <span className={doctor.status === 'active' ? 'text-emerald-600 dark:text-emerald-400 font-medium' : 'text-red-600 dark:text-red-400 font-medium'}>
                                     {doctor.status.charAt(0).toUpperCase() + doctor.status.slice(1)}
                                 </span>
                             </div>

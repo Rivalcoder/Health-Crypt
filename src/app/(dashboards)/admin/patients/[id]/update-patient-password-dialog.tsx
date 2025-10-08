@@ -57,7 +57,7 @@ export default function UpdatePatientPasswordDialog({ patientId, patientName, op
             disabled={loading || success}
           />
           {message && (
-            <div className={success ? "text-green-600" : "text-red-600"}>{message}</div>
+            <div className={success ? "text-emerald-600 dark:text-emerald-400" : "text-red-600 dark:text-red-400"}>{message}</div>
           )}
         </div>
         <DialogFooter>

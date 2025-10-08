@@ -3,6 +3,7 @@ import { Stethoscope, User, Shield, ArrowRight, FileLock, UserCheck, BrainCircui
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/logo';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 export default function Home() {
   const features = [
@@ -44,7 +45,7 @@ export default function Home() {
       delay: "200ms",
     },
     {
-      icon: <Stethoscope className="w-6 h-6 text-green-600" />,
+      icon: <Stethoscope className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />,
       title: "Doctor Login",
       description: "Manage patient records, update visit notes, and prescribe medication.",
       href: "/login?role=doctor",
@@ -65,6 +66,7 @@ export default function Home() {
         <div className="container flex h-14 max-w-screen-2xl items-center justify-between">
           <Logo />
           <div className="flex items-center gap-2">
+            <ThemeToggle />
             <Button variant="outline" asChild>
                 <Link href="/login?role=doctor">Doctor Login</Link>
             </Button>
@@ -167,7 +169,7 @@ export default function Home() {
                       className="flex items-center space-x-3 opacity-0 animate-fade-up"
                       style={{ animationDelay: `${300 + index * 100}ms` }}
                     >
-                      <CheckCircle className="w-6 h-6 text-green-500 flex-shrink-0" />
+                      <CheckCircle className="w-6 h-6 text-emerald-500 dark:text-emerald-400 flex-shrink-0" />
                       <span className="text-foreground">{benefit}</span>
                     </div>
                   ))}

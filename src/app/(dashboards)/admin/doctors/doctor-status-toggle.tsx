@@ -45,7 +45,7 @@ export function DoctorStatusToggle({ doctor }: DoctorStatusToggleProps) {
             disabled={isPending}
             aria-label="Toggle doctor status"
         />
-         <span className={`text-sm ${isActive ? 'text-green-600' : 'text-muted-foreground'}`}>
+         <span className={`text-sm ${isActive ? 'text-emerald-600 dark:text-emerald-400' : 'text-muted-foreground'}`}>
             {isActive ? 'Active' : 'Inactive'}
          </span>
     </div>
