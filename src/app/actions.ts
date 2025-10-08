@@ -22,10 +22,16 @@ const SignupFormSchema = z.object({
   avatar: z.string().optional(),
 });
 
-const LoginFormSchema = z.object({
+const LoginFormSchemaAdminDoctor = z.object({
   email: z.string().email({ message: 'Please enter a valid email.' }),
   password: z.string().min(1, { message: 'Password field cannot be empty.' }),
-  role: z.enum(['admin', 'doctor', 'patient'], { errorMap: () => ({ message: 'Invalid role specified.' }) }),
+  role: z.literal('admin').or(z.literal('doctor')),
+});
+
+const LoginFormSchemaPatient = z.object({
+  patientId: z.string().regex(/^\d{12}$/,{ message: 'Enter a valid 12 digit Patient ID.' }),
+  password: z.string().min(1, { message: 'Password field cannot be empty.' }),
+  role: z.literal('patient'),
 });
 
 const AddDoctorFormSchema = z.object({
@@ -100,11 +106,21 @@ export async function signupUser(prevState: any, formData: FormData) {
     }
     
     const { name, email, password, dateOfBirth, gender, bloodGroup, contact, address, avatar } = validatedFields.data;
+    // Generate unique 12-digit patientId
+    const client = await clientPromise;
+    const db = client.db('medivault');
+    let patientId: string = '';
+    for (let attempts = 0; attempts < 5; attempts++) {
+      const candidate = Array.from({ length: 12 }, (_, i) => (i === 0 ? Math.floor(Math.random() * 9) + 1 : Math.floor(Math.random() * 10))).join('');
+      const exists = await db.collection('patients').findOne({ patientId: candidate });
+      if (!exists) { patientId = candidate; break; }
+    }
+    if (!patientId) {
+      return { success: false, message: 'Could not generate a unique Patient ID. Please try again.' };
+    }
     let insertedId: string;
     let redirectUrl: string;
 
-    const client = await clientPromise;
-    const db = client.db('medivault');
     const patientsCollection = db.collection('patients');
 
     const existingUser = await patientsCollection.findOne({ email });
@@ -121,6 +137,7 @@ export async function signupUser(prevState: any, formData: FormData) {
       name,
       email,
       password: hashedPassword,
+      patientId,
       dateOfBirth,
       gender,
       bloodGroup,
@@ -133,7 +150,7 @@ export async function signupUser(prevState: any, formData: FormData) {
     
     insertedId = result.insertedId.toString();
     await createSession(insertedId, 'patient');
-    redirectUrl = `/patients/${insertedId}`;
+    redirectUrl = `/patients/${insertedId}?pid=${patientId}`;
     
     revalidatePath('/');
     redirect(redirectUrl);
@@ -148,15 +165,40 @@ export async function signupUser(prevState: any, formData: FormData) {
 
 export async function loginUser(prevState: any, formData: FormData) {
   try {
-    const validatedFields = LoginFormSchema.safeParse(
-        Object.fromEntries(formData.entries())
-    );
-
-    if (!validatedFields.success) {
-        return { success: false, message: "Invalid fields provided." };
+    const data = Object.fromEntries(formData.entries());
+    let role = data.role as 'admin' | 'doctor' | 'patient';
+    if (!role || !['admin','doctor','patient'].includes(role)) {
+      return { success: false, message: 'Invalid role specified.' };
     }
 
-    const { email, password, role } = validatedFields.data;
+    let email: string | undefined = undefined;
+    let patientId: string | undefined = undefined;
+    let password: string = String(data.password || '');
+
+    if (role === 'patient') {
+      const identifier = String(data.patientId || data.email || '').trim();
+      const isPid = /^\d{12}$/.test(identifier);
+      if (isPid) {
+        const parsed = LoginFormSchemaPatient.safeParse({ patientId: identifier, password, role });
+        if (!parsed.success) {
+          return { success: false, message: parsed.error.issues[0]?.message || 'Invalid fields provided.' };
+        }
+        patientId = parsed.data.patientId;
+      } else {
+        const emailSchema = z.string().email({ message: 'Please enter a valid email.' });
+        const emailResult = emailSchema.safeParse(identifier);
+        if (!emailResult.success) {
+          return { success: false, message: 'Enter a valid 12 digit Patient ID or a valid email.' };
+        }
+        email = emailResult.data;
+      }
+    } else {
+      const parsed = LoginFormSchemaAdminDoctor.safeParse({ email: data.email, password, role });
+      if (!parsed.success) {
+        return { success: false, message: parsed.error.issues[0]?.message || 'Invalid fields provided.' };
+      }
+      email = parsed.data.email;
+    }
     let redirectUrl: string;
 
     const client = await clientPromise;
@@ -171,13 +213,20 @@ export async function loginUser(prevState: any, formData: FormData) {
       collection = db.collection('patients');
     }
 
-    user = await collection.findOne(
-      { email },
-      { projection: { _id: 1, password: 1, status: 1, licenseId: 1, specialty: 1 } }
-    );
+    if (role === 'patient') {
+      user = await collection.findOne(
+        patientId ? { patientId } : { email },
+        { projection: { _id: 1, password: 1, status: 1 } }
+      );
+    } else {
+      user = await collection.findOne(
+        { email },
+        { projection: { _id: 1, password: 1, status: 1, licenseId: 1, specialty: 1 } }
+      );
+    }
 
     if (!user) {
-        return { success: false, message: 'No user found with this email.' };
+        return { success: false, message: role === 'patient' ? 'No user found with this Patient ID.' : 'No user found with this email.' };
     }
     
     if (role === 'doctor' && user.status === 'inactive') {

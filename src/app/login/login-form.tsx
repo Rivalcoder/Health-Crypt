@@ -32,17 +32,24 @@ export function LoginForm({ role }: { role: 'admin' | 'doctor' | 'patient' }) {
   return (
     <form action={formAction} className="grid gap-4" autoComplete="off">
         <input type="hidden" name="role" value={role} />
-        <div className="grid gap-2">
+        {role === 'patient' ? (
+          <div className="grid gap-2">
+            <Label htmlFor="patientIdOrEmail">Patient ID or Email</Label>
+            <Input id="patientIdOrEmail" name="patientId" placeholder="Enter 12-digit ID or email" autoComplete="off" />
+          </div>
+        ) : (
+          <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
             <Input
-            id="email"
-            type="email"
-            name="email"
-            placeholder="m@example.com"
-            required
-            autoComplete="off"
+              id="email"
+              type="email"
+              name="email"
+              placeholder="m@example.com"
+              required
+              autoComplete="off"
             />
-        </div>
+          </div>
+        )}
         <div className="grid gap-2">
             <Label htmlFor="password">Password</Label>
             <Input id="password" type="password" name="password" required autoComplete="new-password" />

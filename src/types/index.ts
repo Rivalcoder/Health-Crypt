@@ -12,6 +12,7 @@ export type User = {
 
 export type Patient = {
   id: string;
+  patientId?: string;
   name: string;
   email: string;
   dateOfBirth: string;

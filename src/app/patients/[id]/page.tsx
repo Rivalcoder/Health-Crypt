@@ -34,7 +34,7 @@ export default async function PatientViewPage({ params }: { params: Promise<{ id
             </Avatar>
             <div className="grid gap-1 flex-1">
               <CardTitle className="text-3xl font-bold">{patient.name}</CardTitle>
-              <CardDescription>Patient ID: {patient.id}</CardDescription>
+              <CardDescription>Patient ID: {patient.patientId || '—'}</CardDescription>
               <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground pt-2">
                 <div className="flex items-center gap-1"><User className="h-4 w-4" /> {patient.gender}</div>
                 <div className="flex items-center gap-1"><Calendar className="h-4 w-4" /> Born {new Date(patient.dateOfBirth).toLocaleDateString()}</div>

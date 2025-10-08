@@ -51,13 +51,6 @@ export default function Home() {
       href: "/login?role=doctor",
       delay: "400ms",
     },
-    {
-      icon: <Shield className="w-6 h-6 text-secondary-foreground" />,
-      title: "Admin Panel",
-      description: "Oversee hospital operations, manage doctors, and ensure compliance.",
-      href: "/login?role=admin",
-      delay: "600ms",
-    },
   ];
 
   return (
@@ -215,7 +208,7 @@ export default function Home() {
                     Dedicated dashboards for every role in the healthcare ecosystem.
                 </p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
               {portals.map((portal) => (
                 <div
                   key={portal.title}

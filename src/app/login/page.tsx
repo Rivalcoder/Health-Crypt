@@ -15,8 +15,8 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
 
   const content = {
     patient: {
-      title: 'Welcome Back',
-      description: 'Enter your credentials to access your patient portal.',
+      title: 'Patient Login',
+      description: 'Enter your 12-digit Patient ID and password to access your portal.',
     },
     doctor: {
       title: 'Doctor Login',

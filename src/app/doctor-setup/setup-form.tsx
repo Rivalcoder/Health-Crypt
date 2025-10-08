@@ -55,7 +55,7 @@ export function SetupForm() {
             <Alert variant="destructive">
                 <AlertCircle className="h-4 w-4" />
                 <AlertTitle>Setup Failed</AlertTitle>
-                <AlertDescription>{errorMessage}</AlertDescription>
+                <AlertDescription>{typeof errorMessage === 'string' ? errorMessage : errorMessage?.message}</AlertDescription>
             </Alert>
         )}
         <SubmitButton />

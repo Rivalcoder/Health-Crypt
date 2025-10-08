@@ -25,6 +25,7 @@ export async function getPatients(doctorId: string): Promise<Patient[]> {
 
         return patients.map(user => ({
             id: user._id.toString(),
+            patientId: user.patientId,
             name: user.name,
             email: user.email,
             dateOfBirth: user.dateOfBirth,
@@ -47,12 +48,14 @@ export async function findPatients(query: string): Promise<Patient[]> {
         const patients = await db.collection('patients').find({
             $or: [
                 { name: { $regex: query, $options: 'i' } },
-                { email: { $regex: query, $options: 'i' } }
+                { email: { $regex: query, $options: 'i' } },
+                { patientId: { $regex: query, $options: 'i' } }
             ]
         }).limit(10).toArray();
 
         return patients.map(user => ({
             id: user._id.toString(),
+            patientId: user.patientId,
             name: user.name,
             email: user.email,
             dateOfBirth: user.dateOfBirth,
@@ -134,6 +137,7 @@ export async function getPatientData(patientId: string): Promise<{ patient: Pati
 
         const patient: Patient = {
             id: patientDoc._id.toString(),
+            patientId: patientDoc.patientId,
             name: patientDoc.name,
             email: patientDoc.email,
             dateOfBirth: patientDoc.dateOfBirth,
@@ -336,6 +340,7 @@ export async function searchPatientsPaginated(query: string, page = 1, pageSize 
         return {
             patients: patients.map(user => ({
                 id: user._id.toString(),
+                patientId: user.patientId,
                 name: user.name,
                 email: user.email,
                 dateOfBirth: user.dateOfBirth,

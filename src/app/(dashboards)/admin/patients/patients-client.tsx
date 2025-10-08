@@ -88,7 +88,7 @@ export function PatientsClient({ patients: initialPatients }: { patients: Patien
         <CardContent>
           <form onSubmit={handleSearch} className="mb-4 flex gap-2">
             <Input
-              placeholder="Search patients by name or email..."
+              placeholder="Search by name, email, or Patient ID..."
               value={search}
               onChange={e => setSearch(e.target.value)}
               className="max-w-xs"

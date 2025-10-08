@@ -38,6 +38,9 @@ export const getColumns = ({ onEdit, onDelete, pwDialogOpenId, setPwDialogOpenId
           <div>
             <div className="font-medium">{patient.name}</div>
             <div className="text-xs text-muted-foreground">{patient.email}</div>
+            {patient.patientId && (
+              <div className="text-xs">ID: {patient.patientId}</div>
+            )}
           </div>
         </div>
       );

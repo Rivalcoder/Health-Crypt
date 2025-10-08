@@ -106,7 +106,11 @@ export function AdminPatientProfileClient({ patient, visits: initialVisits }: { 
           <CardHeader className="flex flex-col md:flex-row items-start gap-4 space-y-0 p-6">
             <div className="flex-1">
               <CardTitle className="text-2xl font-bold">{patient.name}</CardTitle>
-              <CardDescription>{patient.email}</CardDescription>
+              <CardDescription className="space-x-2">
+                <span>{patient.email}</span>
+                <span className="text-muted-foreground">•</span>
+                <span>Patient ID: {patient.patientId || '—'}</span>
+              </CardDescription>
               <div className="mt-2 text-sm text-muted-foreground">{patient.gender} | {patient.dateOfBirth}</div>
               <div className="mt-2 text-sm">Contact: {patient.contact}</div>
               <div className="mt-2 text-sm">Address: {patient.address}</div>

@@ -1,4 +1,4 @@
-import { getDoctorById } from '@/lib/data';
+import { getDoctorById, getPatients } from '@/lib/data';
 import { notFound } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -15,6 +15,7 @@ export default async function DoctorProfilePage({ params }: { params: Promise<{ 
   console.time(timerLabel);
   const doctor = await getDoctorById(id);
   console.timeEnd(timerLabel);
+  const patients = await getPatients(id);
 
   if (!doctor) {
     notFound();
@@ -59,6 +60,44 @@ export default async function DoctorProfilePage({ params }: { params: Promise<{ 
                 </div>
             </CardContent>
         </Card>
+
+        <div className="mt-8">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-2xl">Patients Treated</CardTitle>
+              <CardDescription>
+                {patients.length > 0 ? `${patients.length} patient${patients.length > 1 ? 's' : ''} treated by ${doctor.name}.` : 'No patients found for this doctor yet.'}
+              </CardDescription>
+            </CardHeader>
+            {patients.length > 0 && (
+              <CardContent>
+                <div className="divide-y">
+                  {patients.map((p) => (
+                    <div key={p.id} className="flex items-center gap-4 py-3">
+                      <Avatar className="h-10 w-10 border">
+                        <AvatarImage src={p.avatarUrl} alt={p.name} data-ai-hint="patient portrait" />
+                        <AvatarFallback>
+                          {p.name ? p.name.charAt(0).toUpperCase() : <User />}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium truncate">
+                          <Link href={`/admin/patients/${p.id}`} className="hover:underline">
+                            {p.name}
+                          </Link>
+                        </div>
+                        <div className="text-sm text-muted-foreground truncate">{p.email}</div>
+                      </div>
+                      <Button asChild variant="outline" size="sm">
+                        <Link href={`/admin/patients/${p.id}`}>View Profile</Link>
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            )}
+          </Card>
+        </div>
       </main>
     </div>
   );
